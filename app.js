@@ -365,17 +365,6 @@ export class GameBoard{
         ].every(item => this.sunk.includes(item))
     }
 
-    showUpdates(){
-        console.log('board');
-        console.table(this.board);
-        console.log('hits');
-        console.table(this.hits)
-        console.log('sunk');
-        console.table(this.sunk)
-        console.log('missed');
-        console.table(this.missed);
-    }
-
 }
 
 export class Player{
@@ -460,6 +449,35 @@ export class Player{
         else return true
     }
 
+    getSurroundingCellsForRectangle(rectangleCoordinates) {
+        const surroundingCells = new Set();
+        const rectangleSet = new Set(rectangleCoordinates.map(coord => JSON.stringify(coord)));
+      
+        rectangleCoordinates.forEach(([row, col]) => {
+          // Check all 8 possible surrounding positions around each cell of the rectangle
+          const neighbors = [
+            [row - 1, col], // top
+            [row + 1, col], // bottom
+            [row, col - 1], // left
+            [row, col + 1], // right
+            [row - 1, col - 1], // top-left
+            [row - 1, col + 1], // top-right
+            [row + 1, col - 1], // bottom-left
+            [row + 1, col + 1]  // bottom-right
+          ];
+      
+          neighbors.forEach(([nRow, nCol]) => {
+            // Only add coordinates if they are non-negative and not part of the rectangle itself
+            if (nRow >= 0 && nCol >= 0 && !rectangleSet.has(JSON.stringify([nRow, nCol]))) {
+              surroundingCells.add(JSON.stringify([nRow, nCol]));
+            }
+          });
+        });
+      
+        // Convert the set of strings back to an array of arrays
+        return Array.from(surroundingCells).map(JSON.parse);
+    }
+
     compRound(){
         //randomise play
         const randomisedOrdinate = this.selectRandomCoOrdinates(this.coOrdinates);
@@ -480,15 +498,21 @@ export class Player{
                 const eastElement = [lastElement[0], lastElement[1]+1]
                 const westElement = [lastElement[0], lastElement[1]-1]
 
+                const northNorth =  [lastElement[0]-2, lastElement[1]]
+                const southSouth = [lastElement[0]+2, lastElement[1]]
+                const eastEast =  [lastElement[0], lastElement[1]+2]
+                const westWest = [lastElement[0], lastElement[1]-2]
+
+                //check for middle hits
                 if(this.checkElement(this.coOrdinates,northElement) && this.checkElement(this.coOrdinates,southElement)){
 
                     if(this.checkValuesNotZeroandEmpty(this.getBoard().board[northElement[0]][northElement[1]]) 
 
-                    &&
+                        &&
 
-                    this.checkValuesNotZeroandEmpty(this.getBoard().board[southElement[0]][southElement[1]])
+                        this.checkValuesNotZeroandEmpty(this.getBoard().board[southElement[0]][southElement[1]])
                     
-                    ){
+                        ){
 
                         this.middleHit.isMiddleHit = true;
                         this.middleHit.values.push(northElement);
@@ -499,6 +523,21 @@ export class Player{
     
                         console.log('north or south found ', this.middleHit);
 
+                        
+                        //check northNorth element if its available and not empty
+
+                        if(this.checkElement(this.coOrdinates,northNorth) && this.checkValuesNotZeroandEmpty(this.getBoard().board[northNorth[0]][northNorth[1]])){
+                            console.log('pushing north NOrth ', northNorth);
+                            this.middleHit.values.push(northNorth);
+                        }
+
+                        //check southSouth element if its available and not empty
+                        if(this.checkElement(this.coOrdinates,southSouth) && this.checkValuesNotZeroandEmpty(this.getBoard().board[southSouth[0]][southSouth[1]])){
+                            console.log('pushing south South ', southSouth);
+                            this.middleHit.values.push(southSouth);
+                        }
+
+
                     }
 
 
@@ -508,30 +547,42 @@ export class Player{
 
                     if( this.checkValuesNotZeroandEmpty(this.getBoard().board[westElement[0]][westElement[1]]) 
                     
-                    && 
-                    
-                    this.checkValuesNotZeroandEmpty(this.getBoard().board[eastElement[0]][eastElement[1]])
+                        && 
+                        
+                        this.checkValuesNotZeroandEmpty(this.getBoard().board[eastElement[0]][eastElement[1]])
 
-                    ){
+                        ){
 
 
-                    this.middleHit.isMiddleHit = true;
-                    this.middleHit.values.push(eastElement);
-                    this.middleHit.values.push(westElement);
+                        this.middleHit.isMiddleHit = true;
+                        this.middleHit.values.push(eastElement);
+                        this.middleHit.values.push(westElement);
 
-                    console.log(' west value ',this.getBoard().board[westElement[0]][westElement[1]]);
-                    console.log(' east value ',this.getBoard().board[eastElement[0]][eastElement[1]]);
+                        console.log(' west value ',this.getBoard().board[westElement[0]][westElement[1]]);
+                        console.log(' east value ',this.getBoard().board[eastElement[0]][eastElement[1]]);
 
-                    console.log('east or west found ', this.middleHit);
+                        console.log('east or west found ', this.middleHit);
 
+                        //check eastEast element if its available and not empty
+
+                        if(this.checkElement(this.coOrdinates,eastEast) && this.checkValuesNotZeroandEmpty(this.getBoard().board[eastEast[0]][eastEast[1]])){
+                            console.log('pushing east East ', eastEast);
+                            this.middleHit.values.push(eastEast);
+                        }
+
+                        //check westWest element if its available and not empty
+                        if(this.checkElement(this.coOrdinates,westWest) && this.checkValuesNotZeroandEmpty(this.getBoard().board[westWest[0]][westWest[1]])){
+                            console.log('pushing west West ', westWest);
+                            this.middleHit.values.push(westWest);
+                        }
 
                     }
 
-
                 }
 
-                const allElements = [northElement,southElement,eastElement,westElement]
+                const allElements = [  northElement,southElement,eastElement,westElement ]
     
+                                
                 allElements.forEach(arr => {
                     if(this.checkElement(this.coOrdinates,arr)){
                         this.soroundingElements.push(arr)
@@ -541,35 +592,58 @@ export class Player{
                 console.log('sorrounding elements ', this.soroundingElements);
             }
 
-            if(this.soroundingElements.length && !this.getBoard().hasAnySunk){
+            if(this.getBoard().hasAnySunk){
 
-                // if(this.middleHit.isMiddleHit){
-                //     this.middleHit.values.forEach(arr => {
-                //         if(this.checkElement(this.coOrdinates,arr)){
-                //             this.soroundingElements.push(arr)
-                //         }
-                //     })
+                //take the name of sunk ship
+                const nameOfSunk = this.getBoard().intelligenceMessage;
+                const hits = this.getHit(nameOfSunk)
 
-                //     this.middleHit.isMiddleHit = false;
+                const sorroundingCells = this.getSurroundingCellsForRectangle(hits);
 
-                // }
+
+                sorroundingCells.forEach(arr => {
+                    if(this.checkElement(this.coOrdinates,arr)){
+
+                        const targetElement = [arr[0], arr[1]];
+                
+                        const index = this.coOrdinates.findIndex(coordinate => coordinate[0] === targetElement[0] && coordinate[1] === targetElement[1]);
+                        
+                        this.coOrdinates.splice(index,1);
+
+                    }
+                })
+                
+            }
+
+            if(this.soroundingElements.length && this.getBoard().hasAnySunk === false){
+
+                if(this.middleHit.isMiddleHit){
+                    this.middleHit.values.forEach(arr => {
+                        // is it available in coOrdinates array 
+                        if(this.checkElement(this.coOrdinates,arr)){
+
+                            //it must not be available in the middleHit array
+                            if(this.checkElement(this.middleHit.values,arr) === false){
+
+                                this.soroundingElements.push(arr);
+
+                                console.log('sorrounding to be accessed ', arr);
+
+                            }
+
+                        }
+
+                    })
+
+                    this.middleHit.isMiddleHit = false;
+
+                }
 
                 const randomisedOrdinate = this.selectRandomCoOrdinates(this.soroundingElements);
                 this.getBoard().receiveAttack(randomisedOrdinate[0],randomisedOrdinate[1]);
 
                 const targetElement = [randomisedOrdinate[0], randomisedOrdinate[1]];
 
-                if(this.getBoard().hasAnySunk){
-
-                    //take the name of sunk ship
-                    const nameOfSunk = this.getBoard().intelligenceMessage;
-                    const hits = this.getHit(nameOfSunk)
-                    console.log('nameOfSunk ', nameOfSunk);
-                    console.log('its hits ', hits);
-
-                    //splice from the coordinates
-                
-                }
                 
                 const index = this.soroundingElements.findIndex(coordinate => coordinate[0] === targetElement[0] && coordinate[1] === targetElement[1]);
 
@@ -584,8 +658,6 @@ export class Player{
                 this.soroundingElements = [];
                 this.getBoard().resetIntelligenceMessage();
             }
-
-
 
         }
 
@@ -603,37 +675,5 @@ export class Player{
     }
 
 }
-
-
-
-//attack patrol
-// myBoard.receiveAttack(2,0)
-// myBoard.receiveAttack(5,0)
-// myBoard.receiveAttack(0,9)
-// myBoard.receiveAttack(0,6)
-
-//attack corrier
-// myBoard.receiveAttack(1,4)
-// myBoard.receiveAttack(2,4)
-// myBoard.receiveAttack(3,7)
-// myBoard.receiveAttack(4,7)
-// myBoard.receiveAttack(7,7)
-// myBoard.receiveAttack(8,7)
-
-//attack subs
-// myBoard.receiveAttack(7,0)
-// myBoard.receiveAttack(7,1)
-// myBoard.receiveAttack(7,2)
-// myBoard.receiveAttack(5,4)
-// myBoard.receiveAttack(6,4)
-// myBoard.receiveAttack(7,4)
-
-//attack tanker
-// myBoard.receiveAttack(3,9)
-// myBoard.receiveAttack(4,9)
-// myBoard.receiveAttack(5,9)
-// myBoard.receiveAttack(6,9)
-
-// myBoard.showUpdates()
 
 
