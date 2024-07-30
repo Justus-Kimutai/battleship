@@ -1,13 +1,11 @@
 import { GameController } from './game.js';
 
-const game = new GameController('justus','kimutai')
+const game = new GameController('comp','username')
 const boardOne = document.querySelector('.board1')
 const boardTwo = document.querySelector('.board2')
 const boardOneDiv = document.querySelector('.board1div')
 const boardTwoDiv = document.querySelector('.board2div')
 const gameOverDiv = document.querySelector('.gameOver')
-const turn1Indicator = document.querySelector('.turn1Indicator')
-const turn2Indicator = document.querySelector('.turn2Indicator')
 
 function getSpecificCell(row, col, board) { 
     if(board === 'board2'){
@@ -45,7 +43,6 @@ function populateBoard(){
             cellButton.dataset.col = collIndex
             cellButton.textContent = '';
 
-
             cellButton.addEventListener('click', (e)=>{
 
                 game.player1.getBoard().receiveAttack(e.target.dataset.row,e.target.dataset.col);
@@ -55,21 +52,48 @@ function populateBoard(){
                 e.target.replaceChildren(dot)
 
                 if(game.player1.getBoard().message !== 'missed'){
+
+                    
+                    const hitShip = game.player1.getBoard().getIntelligenceMessage();
+
+                    if(game.player1.getBoard().hasAnySunk){
+                        const turnsText = `You sunk ${hitShip}`
+                    
+                        printTextLetterByLetter(turnsText,1000);
+
+                    }else{
+                        const turnsText = `Receiving a hit on ${hitShip}`
+                    
+                        printTextLetterByLetter(turnsText,1000);
+
+                    }
+
                     boardOneDiv.firstElementChild.style.display = 'none'
                     boardTwoDiv.firstElementChild.style.display = 'block'
                 }else{
-                    boardOneDiv.firstElementChild.style.display = 'block'
-                    boardTwoDiv.firstElementChild.style.display = 'none'
+
                     console.log('comp turn....');
+
+                
+                    const turnsText = `You missed ${game.player1.getName()}'s turn`
+
+                    printTextLetterByLetter(turnsText,1000);
+
                     setTimeout(()=>{
+
                         compTurn()
                         console.log('print after 2 sec');
+
                     },2000)
-                    // compTurn()
+
+
+                    boardOneDiv.firstElementChild.style.display = 'block'
+                    boardTwoDiv.firstElementChild.style.display = 'none'
+
+                                        
                     return;
                 }
 
-                // turn2Indicator.textContent = `${game.player2.name}'s turn`
 
                 if(game.player1.getBoard().hasAnySunk){
                     console.log(game.player1.getBoard().message);
@@ -90,6 +114,8 @@ function populateBoard(){
                     gameOverDiv.appendChild(winner)
                 }
 
+                
+
             })
             cellButton.classList.add('cell')
             boardOne.appendChild(cellButton);
@@ -101,8 +127,13 @@ function populateBoard(){
             const cellButton = document.createElement('button');
             cellButton.dataset.row = rowIndex
             cellButton.dataset.col = collIndex
-            cellButton.textContent = cell;
-            cellButton.classList.add('cell')
+            cellButton.textContent = '';
+
+            if(cell !== '' && cell !== 0){
+                cellButton.style.background = 'rgb(17, 136, 120)'
+            }
+
+            cellButton.classList.add('cell');
             boardTwo.appendChild(cellButton);
         })
     });
@@ -120,6 +151,26 @@ function populateBoard(){
         if(game.player2.getBoard().message !== 'missed'){
             boardOneDiv.firstElementChild.style.display = 'block'
             boardTwoDiv.firstElementChild.style.display = 'none'
+
+
+            const hitShip = game.player2.getBoard().getIntelligenceMessage();
+
+            if(game.player2.getBoard().hasAnySunk){
+
+                
+
+                const turnsText = `Comp sunk ${hitShip}`
+            
+                printTextLetterByLetter(turnsText,1000);
+
+            }else{
+                const turnsText = `Receiving a hit on ${hitShip}`
+            
+                printTextLetterByLetter(turnsText,1000);
+
+            }
+
+
             console.log('comp turn....');
             setTimeout(()=>{
                 compTurn()
@@ -128,8 +179,19 @@ function populateBoard(){
             // compTurn()
             
         }else{
-            boardOneDiv.firstElementChild.style.display = 'none'
-            boardTwoDiv.firstElementChild.style.display = 'block'
+
+            setTimeout(()=>{
+                
+                boardOneDiv.firstElementChild.style.display = 'none'
+                boardTwoDiv.firstElementChild.style.display = 'block'
+
+            },2000)
+
+            const turnsText = `Comp missed Your turn Captain`
+
+            printTextLetterByLetter(turnsText,1000);
+
+
             return
         }
 
@@ -146,6 +208,8 @@ function populateBoard(){
             winner.textContent = `${game.player1.name} won`
             gameOverDiv.appendChild(winner)
         }
+
+        
     }
 
 }
@@ -180,5 +244,24 @@ function getHit(player, message, board) {
     });
 
 }
+
+function printTextLetterByLetter(text, duration) {
+    const outputElement =  document.querySelector('.status-bar-h2');
+    outputElement.textContent = '...'
+    let index = 0;
+    const intervalTime = duration / text.length;
+
+    function printLetter() {
+        if (index < text.length) {
+            outputElement.textContent += text.charAt(index);
+            index++;
+        } else {
+            clearInterval(interval);
+        }
+    }
+
+    const interval = setInterval(printLetter, intervalTime);
+}
+
 
 populateBoard();

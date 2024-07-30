@@ -1,47 +1,80 @@
 body{
+    position: relative;
     margin: 0;
     padding: 0;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: url('/download.png');
+    background-size: cover;
+    font-family: sans-serif;
     height: 100vh;
 }
 
 .container{
-    position: relative;
     margin: 0 auto;
-    display: flex;
-    justify-content: space-around;
+    width: 80%;
 }
+.header{
+    height: 8vh;
+    background: rgb(3, 3, 75);
+    padding: 2em;
+    text-align: center;
+    color: #C0C0C0;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.status-bar{
+    background: linear-gradient(to right, rgba(0,0,0,0) 0%, #C0C0C0 50%, rgba(0,0,0,0) 100%);
+    text-align: center;
+    padding: 1px;
+    color: rgb(3, 3, 75);
+}
+
+.footer-text{
+    display: block;
+    padding: 40px;
+    text-align: center;
+    color: #C0C0C0;
+}
+
 .gameOver{
     position: absolute;
     height: 100%;
     width: 100%;
-    background-color: rgba(255, 0, 0, 0.384);
+    background-color: rgba(255, 0, 0, 0.575);
     z-index: 10;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    color: #000000 ;
+    
     display: none;
 }
+
 .attacked{
-    background-color: red;
+    background-color: rgb(143, 0, 0);
 }
+
 .cancel-icon{
     height: 10px;
     width: 10px;
     z-index: 10;
     background-color: red;
 }
+
 .dot{
     height: 10px;
     width: 10px;
     border-radius: 50%;
     background: black;
 }
+.board-flex{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
 .board2div,
 .board1div{
     position: relative;
@@ -77,7 +110,7 @@ body{
 }
 
 .cover-vale{
-    background: #d6d6d62f;
+    background: #d6d6d6a2;
     position: absolute;
     height: 100%;
     width: 100%;

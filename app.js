@@ -63,6 +63,10 @@ export class GameBoard{
         this.intelligenceMessage = ''
     }
 
+    getIntelligenceMessage(){
+        return this.intelligenceMessage;
+    }
+
     checkhittedCell(){
 
     }
