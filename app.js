@@ -67,8 +67,8 @@ export class GameBoard{
         return this.intelligenceMessage;
     }
 
-    checkhittedCell(){
-
+    refreshBoard(){
+        this.board = board()
     }
     
     receiveAttack(x,y){

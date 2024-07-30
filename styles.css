@@ -6,12 +6,59 @@ body{
     background-size: cover;
     font-family: sans-serif;
     height: 100vh;
+    width: 100vw;
 }
+img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
 
 .container{
     margin: 0 auto;
     width: 80%;
 }
+.intro-content{
+    color: silver;
+    font-size: 2em;
+    background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgb(3, 3, 75) 50%, rgba(0,0,0,0) 100%);
+    padding: 20px;
+    display: flex;
+    flex-direction:column ;
+    justify-content: center;
+    align-items: center;
+}
+.name{
+    font-size: 1em;
+    background-color: silver;
+    visibility: hidden;
+}
+.btn-continue{
+    font-size: .6em;
+    font-weight: 500;
+    background-color: silver;
+    color: rgb(3, 3, 75);
+    border-radius: 10px;
+    margin-top: 50px;
+    padding: 5px 20px;
+    visibility: hidden;
+}
+
+.intro-screen{
+    background: url('/battleship\ Assignment.png');
+    position: absolute;
+    top: 0  ;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* display: none; */
+}
+
 .header{
     height: 8vh;
     background: rgb(3, 3, 75);
@@ -21,6 +68,7 @@ body{
     text-transform: uppercase;
     font-weight: 700;
 }
+
 .status-bar{
     background: linear-gradient(to right, rgba(0,0,0,0) 0%, #C0C0C0 50%, rgba(0,0,0,0) 100%);
     text-align: center;
@@ -40,7 +88,7 @@ body{
     height: 100%;
     width: 100%;
     background-color: rgba(255, 0, 0, 0.575);
-    z-index: 10;
+    z-index: 100000;
 
     display: flex;
     flex-direction: column;
@@ -49,6 +97,11 @@ body{
     color: #000000 ;
     
     display: none;
+}
+.gameOver p{
+    font-size: 1.2em;
+    font-weight: 700;
+    
 }
 
 .attacked{
@@ -78,6 +131,30 @@ body{
 .board2div,
 .board1div{
     position: relative;
+}
+
+.board1div{
+    display: none;
+}
+
+.shuffle-btn-div{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    display: none;
+}
+
+.shuffleShip{
+    background: silver;
+    color: #000000;
+    font-size: 1.2em;
+    border: none;
+    padding: 5px 25px;
+    border-radius: 10px;
+}
+.shuffleShip:hover{
+    cursor: pointer;
 }
 
 .board1,
@@ -118,7 +195,7 @@ body{
     z-index: 100;
 }
 .board2div .cover-vale{
-    display: block;
+    /* display: block; */
 }
 
 
